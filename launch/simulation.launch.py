@@ -23,29 +23,25 @@ You can launch this file using the following terminal commands:
 
 1. `ros2 launch neo_simulation2 simulation.launch.py --show-args`
    This command shows the arguments that can be passed to the launch file.
-2. `ros2 launch neo_simulation2 simulation.launch.py my_robot:=mpo_700 map_name:=neo_workshop use_sim_time:=true use_robot_state_pub:=true`
+2. `ros2 launch neo_simulation2 simulation.launch.py my_robot:=mp_500 map_name:=neo_track1 use_sim_time:=true use_robot_state_pub:=true`
    This command launches the simulation with sample values for the arguments.
 
 """
 
 # OpaqueFunction is used to perform setup actions during launch through a Python function
-def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_neo_robot_arm_arg, use_sim_time_arg, use_robot_state_pub_arg, use_gazebo_arg):
+def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg, use_robot_state_pub_arg):
     # Create a list to hold all the nodes
     launch_actions = []
     # The perform method of a LaunchConfiguration is called to evaluate its value.
     my_neo_robot = my_neo_robot_arg.perform(context)
     my_neo_environment = my_neo_env_arg.perform(context)
-    my_neo_robot_arm = my_neo_robot_arm_arg.perform(context)
     use_sim_time = use_sim_time_arg.perform(context).lower() == 'true'
-    use_robot_state_pub = use_robot_state_pub_arg.perform(context)
-    use_gazebo = use_gazebo_arg.perform(context)
+    use_robot_state_pub = use_robot_state_pub_arg.perform(context).lower() == 'true'
 
     # Get the required paths for the world and robot robot_description_urdf
     default_world_path = os.path.join(get_package_share_directory('neo_simulation2'), 'worlds', my_neo_environment + '.world')
-    robot_description_urdf = os.path.join(get_package_share_directory('neo_simulation2'), 'robots/'+my_neo_robot+'/', my_neo_robot+'.urdf.xacro')
-    xacro_args = {'use_gazebo': use_gazebo, 'arm': my_neo_robot_arm}  # Set the value of use_gazebo here
+    robot_description_urdf = os.path.join(get_package_share_directory('neo_simulation2'), 'robots/'+my_neo_robot+'/', my_neo_robot+'.urdf')
     # Use xacro to process the file
-    robot_description_xacro = xacro.process_file(robot_description_urdf, mappings=xacro_args).toxml()
 
     gazebo = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -60,22 +56,22 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_ne
     spawn_entity = Node(
         package='gazebo_ros', 
         executable='spawn_entity.py',
-        arguments=['-entity', my_neo_robot,'-topic', '/robot_description',], 
+        arguments=['-entity', my_neo_robot,'-file', robot_description_urdf,], 
         output='screen')
     
     # if use_robot_state_pub is true, start the robot state publisher node
-    if use_robot_state_pub == 'true':
+    if use_robot_state_pub:
         start_robot_state_publisher_cmd = Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 
-                         'robot_description': robot_description_xacro}],
-            )
+            parameters=[{'use_sim_time': use_sim_time}],
+            arguments=[robot_description_urdf])
         # Append the node to the launch_actions only if use_robot_state_pub is true
         launch_actions.append(start_robot_state_publisher_cmd)
-    
+        
+
     teleop = Node(
         package='teleop_twist_keyboard',
         executable="teleop_twist_keyboard",
@@ -102,47 +98,31 @@ def generate_launch_description():
        
     declare_map_name_arg = DeclareLaunchArgument(
             'map_name', default_value='neo_workshop',
-            description='Map Types: "neo_track1", "neo_track2", "neo_workshop"'
+            description='Map Types: "neo_track1", "neo_workshop"'
         )
     
     declare_use_sim_time_arg = DeclareLaunchArgument(
             'use_sim_time', default_value='True',
-            description='Use simulation clock if true'
+            description='Use simulation clock if true (true/false)'
         )
     
     declare_use_robot_state_pub_arg = DeclareLaunchArgument(
-            'use_robot_state_pub', default_value='true',
-            description='Use robot state publisher if true'
-        )
-    
-    declare_use_gazebo_arg = DeclareLaunchArgument(
-            'use_gazebo', default_value='true',
-            description='Use gazebo if true'
-        )
-    
-    declare_arm_cmd = DeclareLaunchArgument(
-            'arm_name', default_value='',
-            description='Arm Types:\n'
-                'Elite Arms: ec66, cs66\n'
-                'Universal Robotics: ur5, ur10, ur5e, ur10e'        
+            'use_robot_state_pub', default_value='True',
+            description='Use robot state publisher if true (true/false)'
         )
     
     # Create launch configuration variables for the robot and map name
     my_neo_robot_arg = LaunchConfiguration('my_robot')
     my_neo_env_arg = LaunchConfiguration('map_name')
-    my_neo_robot_arm_arg = LaunchConfiguration('arm_name')
     use_sim_time_arg = LaunchConfiguration('use_sim_time')
     use_robot_state_pub_arg = LaunchConfiguration('use_robot_state_pub')
-    use_gazebo_arg = LaunchConfiguration('use_gazebo')
 
     ld.add_action(declare_my_robot_arg)
     ld.add_action(declare_map_name_arg)
     ld.add_action(declare_use_sim_time_arg)
     ld.add_action(declare_use_robot_state_pub_arg)
-    ld.add_action(declare_use_gazebo_arg)
-    ld.add_action(declare_arm_cmd)
     
-    context_arguments = [my_neo_robot_arg, my_neo_env_arg, my_neo_robot_arm_arg, use_sim_time_arg, use_robot_state_pub_arg, use_gazebo_arg]
+    context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg, use_robot_state_pub_arg]
     opq_function = OpaqueFunction(function=launch_setup, 
                                   args=context_arguments)
 

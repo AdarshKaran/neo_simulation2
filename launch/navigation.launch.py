@@ -21,8 +21,9 @@ You can launch this file using the following terminal commands:
 
 1. `ros2 launch neo_simulation2 navigation.launch.py --show-args`
    This command shows the arguments that can be passed to the launch file.
-2. `ros2 launch neo_simulation2 navigation.launch.py my_robot:=mpo_700 map_name:=neo_workshop use_sim_time:=true use_multi_robots:=true use_amcl:=true`
+2. `ros2 launch neo_simulation2 navigation.launch.py my_robot:=mp_500 map_name:=neo_track1 use_sim_time:=True use_multi_robots:=False use_amcl:=False`
    This command launches the simulation with sample values for the arguments.
+   !(case is important for True/False)
 
 """
 
@@ -106,22 +107,22 @@ def generate_launch_description():
        
     declare_map_name_arg = DeclareLaunchArgument(
             'map_name', default_value='neo_workshop',
-            description='Map Types: "neo_track1", "neo_track2", "neo_workshop"'
+            description='Map Types: "neo_track1", "neo_workshop"'
         )
     
     declare_use_multi_robots_cmd = DeclareLaunchArgument(
             'use_multi_robots', default_value='False',
-            description='Use multi robots'
+            description='Use multi robots "True/False"'
         )
     
     declare_use_amcl_cmd = DeclareLaunchArgument(
             'use_amcl', default_value='False',
-            description='Use amcl'
+            description='Use amcl for localization "True/False"'
         )
     
     declare_use_sim_time_cmd = DeclareLaunchArgument(
             'use_sim_time', default_value='True',
-            description='Use simulation clock if true'
+            description='Use simulation clock if true "True/False"'
         )   
     
     declare_namespace_cmd = DeclareLaunchArgument(
@@ -143,6 +144,7 @@ def generate_launch_description():
     ld.add_action(declare_use_amcl_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_namespace_cmd)
+
 
     context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time, use_amcl, use_multi_robots, namespace]
     opq_func = OpaqueFunction(function = launch_setup, 
