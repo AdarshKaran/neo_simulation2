@@ -52,7 +52,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
             get_package_share_directory('neo_simulation2'),
             'configs/'+my_neo_robot,
             param_file_name))
-    
+
     nav2_launch_file_dir = os.path.join(get_package_share_directory('neo_nav2_bringup'), 'launch')
 
     # Define the IncludeLaunchDescription objects
@@ -101,7 +101,7 @@ def generate_launch_description():
             'my_robot', default_value='mpo_700',
             description='Robot Types: "mpo_700", "mpo_500", "mp_400", "mp_500"'
         ) 
-       
+
     declare_map_name_arg = DeclareLaunchArgument(
             'map_name', default_value='neo_workshop',
             description='Map Types: "neo_track1", "neo_workshop"'
@@ -145,7 +145,7 @@ def generate_launch_description():
     context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time, use_amcl, use_multi_robots, namespace]
     opq_func = OpaqueFunction(function = launch_setup, 
                               args = context_arguments)
-    
+
     ld.add_action(opq_func)
 
     return ld

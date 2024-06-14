@@ -49,13 +49,13 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
                 'verbose': 'true',
             }.items()
         )
-    
+
     spawn_entity = Node(
         package='gazebo_ros', 
         executable='spawn_entityros2_control_ec66_macro.urdf.xacro.py',
         arguments=['-entity', my_neo_robot,'-file', robot_description_urdf,], 
         output='screen')
-    
+
     # Start the robot state publisher node
     start_robot_state_publisher_cmd = Node(
         package='robot_state_publisher',
@@ -66,7 +66,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
         arguments=[robot_description_urdf])
     # Append the node to the launch_actions only if use_robot_state_pub is true
     launch_actions.append(start_robot_state_publisher_cmd)
-        
+    
     teleop = Node(
         package='teleop_twist_keyboard',
         executable="teleop_twist_keyboard",
@@ -89,7 +89,7 @@ def generate_launch_description():
             'my_robot', default_value='mpo_700',
             description='Robot Types: "mpo_700", "mpo_500", "mp_400", "mp_500"'
         ) 
-       
+    
     declare_map_name_arg = DeclareLaunchArgument(
             'map_name', default_value='neo_workshop',
             description='Map Types: "neo_track1", "neo_workshop"'
@@ -108,7 +108,7 @@ def generate_launch_description():
     ld.add_action(declare_my_robot_arg)
     ld.add_action(declare_map_name_arg)
     ld.add_action(declare_use_sim_time_arg)
-    
+
     context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg]
     opq_function = OpaqueFunction(
         function=launch_setup, 
