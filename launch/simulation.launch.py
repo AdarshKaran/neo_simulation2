@@ -4,13 +4,11 @@
 import launch
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription, LaunchContext
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, LogInfo
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 import os
-from pathlib import Path
-import xacro
 
 """
 Description:
@@ -52,8 +50,8 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
 
     spawn_entity = Node(
         package='gazebo_ros', 
-        executable='spawn_entityros2_control_ec66_macro.urdf.xacro.py',
-        arguments=['-entity', my_neo_robot,'-file', robot_description_urdf,], 
+        executable='spawn_entity.py',
+        arguments=['-entity', my_neo_robot,'-file', robot_description_urdf], 
         output='screen')
 
     # Start the robot state publisher node
