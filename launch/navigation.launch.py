@@ -29,7 +29,6 @@ You can launch this file using the following terminal commands:
 
 # OpaqueFunction is used to perform setup actions during launch through a Python function
 def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg, use_amcl_arg, use_multi_robots_arg, namespace_arg):
-    
     my_neo_robot = my_neo_robot_arg.perform(context)
     my_neo_environment = my_neo_env_arg.perform(context)
     use_sim_time = use_sim_time_arg.perform(context)
@@ -66,7 +65,6 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
             'use_multi_robots': use_multi_robots,
             'params_file': param_dir,
             'namespace': namespace}.items(),
-            
     )
 
     localization_amcl_launch_description = IncludeLaunchDescription(
@@ -96,7 +94,6 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
     return launch_actions
 
 def generate_launch_description():
-
     ld = LaunchDescription()
 
     # Declare launch arguments 'my_robot' and 'map_name' with default values and descriptions
@@ -144,7 +141,6 @@ def generate_launch_description():
     ld.add_action(declare_use_amcl_cmd)
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_namespace_cmd)
-
 
     context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time, use_amcl, use_multi_robots, namespace]
     opq_func = OpaqueFunction(function = launch_setup, 
