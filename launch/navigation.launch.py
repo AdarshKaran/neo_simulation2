@@ -3,66 +3,149 @@
 
 import os
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription, GroupAction
+from launch import LaunchDescription, LaunchContext
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
-from launch_ros.actions import Node, PushRosNamespace
 from launch.conditions import IfCondition
 
+"""
+Description:
 
-MY_NEO_ROBOT = os.environ['MY_ROBOT']
-MY_NEO_ENVIRONMENT = os.environ['MAP_NAME']
+You can launch this file using the following terminal commands:
 
-def generate_launch_description():
-    use_multi_robots = LaunchConfiguration('use_multi_robots', default='False')
-    use_amcl = LaunchConfiguration('use_amcl', default='False')
-    use_sim_time = LaunchConfiguration('use_sim_time', default='True')
-    namespace = LaunchConfiguration('namespace', default='')
-    use_namespace = LaunchConfiguration('use_namespace', default='False')
+This launch file is used to start the navigation for simulated Neobotix robot. 
+It is launched after launching the "simulation.launch.py" file.
+
+You can launch this file using the following terminal commands:
+
+1. `ros2 launch neo_simulation2 navigation.launch.py --show-args`
+   This command shows the arguments that can be passed to the launch file.
+2. `ros2 launch neo_simulation2 navigation.launch.py my_robot:=mp_500 map_name:=neo_track1 use_sim_time:=True use_multi_robots:=False use_amcl:=False`
+   This command launches the simulation with sample values for the arguments.
+   !(case is important for True/False)
+
+"""
+
+# OpaqueFunction is used to perform setup actions during launch through a Python function
+def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg, use_amcl_arg, use_multi_robots_arg, namespace_arg):
+    my_neo_robot = my_neo_robot_arg.perform(context)
+    my_neo_environment = my_neo_env_arg.perform(context)
+    use_sim_time = use_sim_time_arg.perform(context)
+    use_amcl = use_amcl_arg.perform(context)
+    use_multi_robots = use_multi_robots_arg.perform(context)
+    namespace = namespace_arg.perform(context)
+
+    launch_actions = []
+
     map_dir = LaunchConfiguration(
         'map',
         default=os.path.join(
             get_package_share_directory('neo_simulation2'),
             'maps',
-            MY_NEO_ENVIRONMENT+'.yaml'))
+            my_neo_environment+'.yaml'))
 
     param_file_name = 'navigation.yaml'
     param_dir = LaunchConfiguration(
         'params_file',
         default=os.path.join(
             get_package_share_directory('neo_simulation2'),
-            'configs/'+MY_NEO_ROBOT,
+            'configs/'+my_neo_robot,
             param_file_name))
 
     nav2_launch_file_dir = os.path.join(get_package_share_directory('neo_nav2_bringup'), 'launch')
 
-    return LaunchDescription([
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([nav2_launch_file_dir, '/localization_neo.launch.py']),
-            condition=IfCondition(PythonExpression(['not ', use_amcl])),
-            launch_arguments={
-                'map': map_dir,
-                'use_sim_time': use_sim_time,
-                'use_multi_robots': use_multi_robots,
-                'params_file': param_dir,
-                'namespace': namespace}.items(),
-        ),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([nav2_launch_file_dir, '/localization_amcl.launch.py']),
-            condition=IfCondition(use_amcl),
-            launch_arguments={
-                'map': map_dir,
-                'use_sim_time': use_sim_time,
-                'use_multi_robots': use_multi_robots,
-                'params_file': param_dir,
-                'namespace': namespace}.items(),
-        ),
+    # Define the IncludeLaunchDescription objects
+    localization_neo_launch_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([nav2_launch_file_dir, '/localization_neo.launch.py']),
+        condition=IfCondition(PythonExpression(['not ', use_amcl])),
+        launch_arguments={
+            'map': map_dir,
+            'use_sim_time': use_sim_time,
+            'use_multi_robots': use_multi_robots,
+            'params_file': param_dir,
+            'namespace': namespace}.items(),
+    )
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([nav2_launch_file_dir, '/navigation_neo.launch.py']),
-            launch_arguments={'namespace': namespace,
-                              'use_sim_time': use_sim_time,
-                              'params_file': param_dir}.items()),
-        ])
+    localization_amcl_launch_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([nav2_launch_file_dir, '/localization_amcl.launch.py']),
+        condition=IfCondition(use_amcl),
+        launch_arguments={
+            'map': map_dir,
+            'use_sim_time': use_sim_time,
+            'use_multi_robots': use_multi_robots,
+            'params_file': param_dir,
+            'namespace': namespace}.items(),
+    )
+
+    navigation_neo_launch_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([nav2_launch_file_dir, '/navigation_neo.launch.py']),
+        launch_arguments={
+            'namespace': namespace,
+            'use_sim_time': use_sim_time,
+            'params_file': param_dir}.items(),
+    )
+
+    # Append the IncludeLaunchDescription objects to the launch_actions list
+    launch_actions.append(localization_neo_launch_description)
+    launch_actions.append(localization_amcl_launch_description)
+    launch_actions.append(navigation_neo_launch_description)
+
+    return launch_actions
+
+def generate_launch_description():
+    ld = LaunchDescription()
+
+    # Declare launch arguments 'my_robot' and 'map_name' with default values and descriptions
+    declare_my_robot_arg = DeclareLaunchArgument(
+            'my_robot', default_value='mpo_700',
+            description='Robot Types: "mpo_700", "mpo_500", "mp_400", "mp_500"'
+        ) 
+
+    declare_map_name_arg = DeclareLaunchArgument(
+            'map_name', default_value='neo_workshop',
+            description='Map Types: "neo_track1", "neo_workshop"'
+        )
+    
+    declare_use_multi_robots_cmd = DeclareLaunchArgument(
+            'use_multi_robots', default_value='False',
+            description='Use multi robots "True/False"'
+        )
+    
+    declare_use_amcl_cmd = DeclareLaunchArgument(
+            'use_amcl', default_value='False',
+            description='Use amcl for localization "True/False"'
+        )
+    
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+            'use_sim_time', default_value='True',
+            description='Use simulation clock if true "True/False"'
+        )   
+    
+    declare_namespace_cmd = DeclareLaunchArgument(
+            'robot_namespace', default_value='',
+            description='Top-level namespace'
+        )
+    
+    # Create launch configuration variables for the launch arguments
+    my_neo_robot_arg = LaunchConfiguration('my_robot')
+    my_neo_env_arg = LaunchConfiguration('map_name')
+    use_multi_robots = LaunchConfiguration('use_multi_robots')
+    use_amcl = LaunchConfiguration('use_amcl')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    namespace = LaunchConfiguration('robot_namespace')
+
+    ld.add_action(declare_my_robot_arg)
+    ld.add_action(declare_map_name_arg)
+    ld.add_action(declare_use_multi_robots_cmd)
+    ld.add_action(declare_use_amcl_cmd)
+    ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_namespace_cmd)
+
+    context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time, use_amcl, use_multi_robots, namespace]
+    opq_func = OpaqueFunction(function = launch_setup, 
+                              args = context_arguments)
+
+    ld.add_action(opq_func)
+
+    return ld
