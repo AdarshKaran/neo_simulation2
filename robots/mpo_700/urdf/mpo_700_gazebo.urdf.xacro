@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
+
+    <xacro:property name="wheel_mu" value="0.0001" />
+    <xacro:property name="lidar_resolution" value="0.05" />
+
+    <!--Gazebo Wheel Macro-->
+    <xacro:macro name="wheel_gazebo" params="wheel_link">
+        <gazebo reference="${wheel_link}">
+            <!-- <kp> 10000 </kp> -->
+            <!-- <fdir1>0 1 0</fdir1> -->
+            <!-- <slip1> 0.1 </slip1> -->
+            <mu1>${wheel_mu}</mu1>
+            <mu2>${wheel_mu}</mu2>
+        </gazebo>
+    </xacro:macro>
+
+      <!-- SENSORS -->
+      <!-- Sick S300 - Comment/Uncomment if required -->
+      <!-- <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/xacros/sick_S300.xacro" /> -->
+      <!--Ultrasonics, cameras and IMU's  -->
+
+      <gazebo reference="lidar_1_link">
+          <sensor name="lidar_1_sensor" type="ray">
+              <always_on>true</always_on>
+              <pose>0 0 0 0 0 0</pose>
+              <visualize>false</visualize>
+              <update_rate>40</update_rate>
+              <ray>
+                  <scan>
+                      <horizontal>
+                          <samples>720</samples>
+                          <resolution>1</resolution>
+                          <min_angle>-1.48</min_angle>
+                          <max_angle>1.48</max_angle>
+                      </horizontal>
+                  </scan>
+                  <range>
+                      <min>0.10</min>
+                      <max>30.0</max>
+                      <resolution>${lidar_resolution}</resolution>
+                  </range>
+                  <noise>
+                      <type>gaussian</type>
+                      <!-- Noise parameters based on published spec for Hokuyo laser
+                              achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                              stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                              reading. -->
+                      <mean>0.0</mean>
+                      <stddev>0.01</stddev>
+                  </noise>
+              </ray>
+              <plugin filename="libgazebo_ros_ray_sensor.so" name="lidar_1">
+                  <ros>
+                      <!-- <namespace>   </namespace> -->
+                      <argument>~/out:=scan</argument>
+                  </ros>
+                  <!-- Set output to sensor_msgs/LaserScan to get same output type as gazebo_ros_laser -->
+                  <output_type>sensor_msgs/LaserScan</output_type>
+                  <frame_name>lidar_1_link</frame_name>
+              </plugin>
+          </sensor>
+      </gazebo>
+
+      <gazebo reference="lidar_2_link">
+          <sensor name="lidar_2_sensor" type="ray">
+              <pose>0 0 0 0 0 0</pose>
+              <visualize>false</visualize>
+              <update_rate>40</update_rate>
+                  <ray>
+                      <scan>
+                          <horizontal>
+                              <samples>720</samples>
+                              <resolution>1</resolution>
+                              <min_angle>-1.48</min_angle>
+                              <max_angle>1.48</max_angle>
+                          </horizontal>
+                      </scan>
+                      <range>
+                          <min>0.10</min>
+                          <max>30.0</max>
+                          <resolution>${lidar_resolution}</resolution>
+                      </range>
+                      <noise>
+                          <type>gaussian</type>
+                          <!-- Noise parameters based on published spec for Hokuyo laser
+                                  achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                                  stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                                  reading. -->
+                          <mean>0.0</mean>
+                          <stddev>0.01</stddev>
+                      </noise>
+                  </ray>
+              <plugin filename="libgazebo_ros_ray_sensor.so" name="lidar_2">
+                  <ros>
+                    <!-- <namespace> </namespace> -->
+                      <argument>~/out:=scan2</argument>
+                  </ros>
+                  <!-- Set output to sensor_msgs/LaserScan to get same output type as gazebo_ros_laser -->
+                  <output_type>sensor_msgs/LaserScan</output_type>
+                  <frame_name>lidar_2_link</frame_name>
+              </plugin>
+          </sensor>
+      </gazebo>
+
+      <gazebo>
+          <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+              <commandTopic>cmd_vel</commandTopic>
+              <odometryTopic>odom</odometryTopic>
+              <robotNamespace><remapping>/tf:=tf</remapping>  </robotNamespace>
+              <ros>    <remapping>/tf:=tf</remapping>    </ros>
+
+              <!-- Set control loop update rate -->
+              <odometryRate>100</odometryRate>
+              <!-- Set odom publish rate -->
+              <publish_rate>100</publish_rate>
+
+              <!-- Set if odom required -->
+              <publish_odom>true</publish_odom>
+              <publish_odom_tf>true</publish_odom_tf>
+
+              <!-- Frame IDs -->
+              <odometryFrame>odom</odometryFrame>
+              <robotBaseFrame>base_foot</robotBaseFrame>
+
+              <!-- Set odom covariance -->
+              <covariance_x>0.0001</covariance_x>
+              <covariance_y>0.0001</covariance_y>
+              <covariance_yaw>0.0001</covariance_yaw>
+          </plugin>  
+      </gazebo>
+      
+    <xacro:wheel_gazebo wheel_link="mpo_700_wheel_front_right_link" />
+    <xacro:wheel_gazebo wheel_link="mpo_700_wheel_back_right_link" />
+    <xacro:wheel_gazebo wheel_link="mpo_700_wheel_front_left_link" />
+    <xacro:wheel_gazebo wheel_link="mpo_700_wheel_back_left_link" />
+
+</robot>

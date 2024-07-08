@@ -9,6 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 import os
+import xacro
 
 """
 Description:
@@ -26,33 +27,39 @@ You can launch this file using the following terminal commands:
 """
 
 # OpaqueFunction is used to perform setup actions during launch through a Python function
-def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg):
+def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_neo_robot_arm_arg, use_sim_time_arg):
     # Create a list to hold all the nodes
     launch_actions = []
     # The perform method of a LaunchConfiguration is called to evaluate its value.
     my_neo_robot = my_neo_robot_arg.perform(context)
     my_neo_environment = my_neo_env_arg.perform(context)
+    my_neo_robot_arm = my_neo_robot_arm_arg.perform(context)
     use_sim_time = use_sim_time_arg.perform(context).lower() == 'true'
 
     # Get the required paths for the world and robot robot_description_urdf
     default_world_path = os.path.join(get_package_share_directory('neo_simulation2'), 'worlds', my_neo_environment + '.world')
-    robot_description_urdf = os.path.join(get_package_share_directory('neo_simulation2'), 'robots/'+my_neo_robot+'/', my_neo_robot+'.urdf')
+    robot_description_urdf = os.path.join(get_package_share_directory('neo_simulation2'), 'robots/'+my_neo_robot+'/', my_neo_robot+'.urdf.xacro')
+    # use_gazebo is set to True since this code launches the robot in simulation
+    xacro_args = {'use_gazebo': 'true','arm': my_neo_robot_arm, 'robot_prefix': my_neo_robot}
+    # Use xacro to process the file
+    robot_description_xacro = xacro.process_file(robot_description_urdf, mappings=xacro_args).toxml()
 
     gazebo = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
-            ),
-            launch_arguments={
-                'world': default_world_path,
-                'verbose': 'true',
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
+        ),
+        launch_arguments={
+            'world': default_world_path,
+            'verbose': 'true',
             }.items()
         )
 
     spawn_entity = Node(
         package='gazebo_ros', 
         executable='spawn_entity.py',
-        arguments=['-entity', my_neo_robot,'-file', robot_description_urdf], 
-        output='screen')
+        arguments=['-entity', my_neo_robot,'-topic', '/robot_description',], 
+        output='screen'
+        )
 
     # Start the robot state publisher node
     start_robot_state_publisher_cmd = Node(
@@ -60,22 +67,37 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
         executable='robot_state_publisher',
         name='robot_state_publisher',
         output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        arguments=[robot_description_urdf])
-    # Append the node to the launch_actions only if use_robot_state_pub is true
-    launch_actions.append(start_robot_state_publisher_cmd)
-    
+        parameters=[{'use_sim_time': use_sim_time, 
+                     'robot_description': robot_description_xacro}],
+        )
+
     teleop = Node(
         package='teleop_twist_keyboard',
         executable="teleop_twist_keyboard",
         output='screen',
         prefix = 'xterm -e',
-        name='teleop')
+        name='teleop'
+        )
 
-    # The required nodes can just be appended to the launch_actions list
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        )
+
+    initial_joint_controller_spawner_stopped = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_trajectory_controller", "-c", "/controller_manager"],
+        )
+
+    launch_actions.append(teleop)
+    launch_actions.append(start_robot_state_publisher_cmd)
+    if my_neo_robot_arm != '':
+      launch_actions.append(joint_state_broadcaster_spawner)
+      launch_actions.append(initial_joint_controller_spawner_stopped)
     launch_actions.append(gazebo)
     launch_actions.append(spawn_entity)
-    launch_actions.append(teleop)
 
     return launch_actions
 
@@ -87,30 +109,39 @@ def generate_launch_description():
             'my_robot', default_value='mpo_700',
             description='Robot Types: "mpo_700", "mpo_500", "mp_400", "mp_500"'
         ) 
-    
+
     declare_map_name_arg = DeclareLaunchArgument(
             'map_name', default_value='neo_workshop',
             description='Map Types: "neo_track1", "neo_workshop"'
         )
-    
+
     declare_use_sim_time_arg = DeclareLaunchArgument(
             'use_sim_time', default_value='True',
             description='Use simulation clock if true (true/false)'
         )
-    
+
+    declare_arm_cmd = DeclareLaunchArgument(
+        'arm', default_value='',
+        description='Arm Types:\n'
+            '\t Elite Arms: ec66, cs66\n'
+            '\t Universal Robotics: ur5, ur10, ur5e, ur10e'        
+        )
+
     # Create launch configuration variables for the robot and map name
     my_neo_robot_arg = LaunchConfiguration('my_robot')
     my_neo_env_arg = LaunchConfiguration('map_name')
+    my_neo_robot_arm_arg = LaunchConfiguration('arm')
     use_sim_time_arg = LaunchConfiguration('use_sim_time')
 
     ld.add_action(declare_my_robot_arg)
     ld.add_action(declare_map_name_arg)
+    ld.add_action(declare_arm_cmd)
     ld.add_action(declare_use_sim_time_arg)
 
-    context_arguments = [my_neo_robot_arg, my_neo_env_arg, use_sim_time_arg]
+    context_arguments = [my_neo_robot_arg, my_neo_env_arg, my_neo_robot_arm_arg, use_sim_time_arg]
     opq_function = OpaqueFunction(
-        function=launch_setup, 
-        args=context_arguments
+            function=launch_setup, 
+            args=context_arguments
         )
 
     ld.add_action(opq_function)

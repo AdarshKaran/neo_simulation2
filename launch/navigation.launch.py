@@ -24,7 +24,6 @@ You can launch this file using the following terminal commands:
 2. `ros2 launch neo_simulation2 navigation.launch.py my_robot:=mp_500 map_name:=neo_track1 use_sim_time:=True use_multi_robots:=False use_amcl:=False`
    This command launches the simulation with sample values for the arguments.
    !(case is important for True/False)
-
 """
 
 # OpaqueFunction is used to perform setup actions during launch through a Python function
@@ -65,7 +64,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
             'use_multi_robots': use_multi_robots,
             'params_file': param_dir,
             'namespace': namespace}.items(),
-    )
+        )
 
     localization_amcl_launch_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([nav2_launch_file_dir, '/localization_amcl.launch.py']),
@@ -76,7 +75,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
             'use_multi_robots': use_multi_robots,
             'params_file': param_dir,
             'namespace': namespace}.items(),
-    )
+        )
 
     navigation_neo_launch_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([nav2_launch_file_dir, '/navigation_neo.launch.py']),
@@ -84,7 +83,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, use_s
             'namespace': namespace,
             'use_sim_time': use_sim_time,
             'params_file': param_dir}.items(),
-    )
+        )
 
     # Append the IncludeLaunchDescription objects to the launch_actions list
     launch_actions.append(localization_neo_launch_description)
@@ -149,3 +148,6 @@ def generate_launch_description():
     ld.add_action(opq_func)
 
     return ld
+
+
+
