@@ -6,9 +6,9 @@ name: neobotix-CI
 on:
   # Triggers the workflow on push or pull request events but only for the "rolling" branch
   push:
-    branches: [ "rolling" ]
+    branches: [ "iron" ]
   pull_request:
-    branches: [ "rolling" ]
+    branches: [ "iron" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,12 +24,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: ros-tooling/setup-ros@0.3.4
+      - uses: ros-tooling/setup-ros@0.7.7
         with:
           use-ros2-testing: false
-      - uses: ros-tooling/action-ros-ci@0.2.6
+      - uses: ros-tooling/action-ros-ci@0.3.13
         with:
-          target-ros2-distro: rolling
+          target-ros2-distro: iron
           colcon-defaults: |
             {
               "build": {
