@@ -1,4 +1,4 @@
-material NeobotixGroundPlane/Image
+material NeobotixWallStickers/Image
     {
       technique
       {
@@ -10,7 +10,7 @@ material NeobotixGroundPlane/Image
 
           texture_unit
           {
-            texture MyImage.jpg
+            texture WallSticker.png
           }
         }
       }
