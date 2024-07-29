@@ -1,25 +1,31 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
 
-    <!-- Wheel Properties -->
-    <xacro:property name="wheel_joint_type" value="fixed" />
-    <xacro:property name="wheel_joint_origin_rpy" value="0 0 0" />
-    <xacro:property name="wheel_joint_origin_xyz" value="-0.05 0. 0.18" />
-    <xacro:property name="wheel_link_mass" value="1.2" />
-
     <!--WHEEL MACRO-->
-    <xacro:macro name="regular_wheel" params="wheel_prefix parent ixx iyy izz has_limits">
+    <xacro:macro name="mpo_700_wheel" params="
+        wheel_prefix 
+        parent_link
+        *origin
+        wheel_joint_type 
+        ixx 
+        iyy 
+        izz 
+        has_limits
+        model_scale
+        ">
 
+        <!--wheel joint-->
         <joint name="${wheel_prefix}_joint" type="${wheel_joint_type}">
-            <origin rpy="${wheel_joint_origin_rpy}" xyz="${wheel_joint_origin_xyz}"/>
+            <xacro:insert_block name="origin"/>
             <xacro:if value="${has_limits}">
                 <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="15"/>
             </xacro:if>
             <axis xyz="1 0 0"/>
-            <parent link="${parent}"/>
+            <parent link="${parent_link}_link"/>
             <child link="${wheel_prefix}_link"/>
         </joint>
 
+        <!--wheel link-->
         <link name="${wheel_prefix}_link" type="wheel">
             <inertial>
                 <mass value="${wheel_link_mass}"/>
@@ -41,9 +47,4 @@
         </link>
     </xacro:macro>
 
-    <!-- Wheels - Only Front wheels have limits-->
-    <xacro:regular_wheel wheel_prefix="mpo_700_wheel_front_left" ixx="0.11042056" iyy="0.11042056" izz="0.11042056" parent="mpo_700_caster_front_left_link" has_limits="true"/>
-    <xacro:regular_wheel wheel_prefix="mpo_700_wheel_front_right" ixx="0.11042056" iyy="0.11042056" izz="0.11042056" parent="mpo_700_caster_front_right_link" has_limits="true"/>
-    <xacro:regular_wheel wheel_prefix="mpo_700_wheel_back_left" ixx="0.11042056" iyy="0.11042056" izz="0.11042056" parent="mpo_700_caster_back_left_link" has_limits="false"/>
-    <xacro:regular_wheel wheel_prefix="mpo_700_wheel_back_right" ixx="0.11042056" iyy="0.11042056" izz="0.11042056" parent="mpo_700_caster_back_right_link" has_limits="false"/>
-</robot>
+   </robot>

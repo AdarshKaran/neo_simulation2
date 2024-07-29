@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
+
+    <!--Gazebo Wheel Macro-->
+    <xacro:macro name="gazebo_mpo_700_wheel" params="
+      wheel_prefix 
+      wheel_mu
+      ">
+
+        <gazebo reference="${wheel_prefix}_link">
+            <!-- <kp> 10000 </kp> -->
+            <!-- <fdir1>0 1 0</fdir1> -->
+            <!-- <slip1> 0.1 </slip1> -->
+            <mu1>${wheel_mu}</mu1>
+            <mu2>${wheel_mu}</mu2>
+        </gazebo>
+    </xacro:macro>
+
+</robot>
