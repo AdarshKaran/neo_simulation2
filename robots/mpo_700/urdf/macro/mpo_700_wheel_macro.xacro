@@ -5,6 +5,7 @@
     <xacro:macro name="mpo_700_wheel" params="
         wheel_prefix 
         parent_link
+        link_origin_rpy
         *origin
         wheel_joint_type 
         ixx 
@@ -14,17 +15,6 @@
         model_scale
         ">
 
-        <!--wheel joint-->
-        <joint name="${wheel_prefix}_joint" type="${wheel_joint_type}">
-            <xacro:insert_block name="origin"/>
-            <xacro:if value="${has_limits}">
-                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="15"/>
-            </xacro:if>
-            <axis xyz="1 0 0"/>
-            <parent link="${parent_link}_link"/>
-            <child link="${wheel_prefix}_link"/>
-        </joint>
-
         <!--wheel link-->
         <link name="${wheel_prefix}_link" type="wheel">
             <inertial>
@@ -33,7 +23,7 @@
                 <inertia ixx="${ixx}" ixy="0" ixz="0" iyy="${iyy}" iyz="0" izz="${izz}"/>
             </inertial>
             <visual>
-                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <origin rpy="${link_origin_rpy}" xyz="0 0 0"/>
                 <geometry>
                     <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-WHEEL.dae" scale="${model_scale}"/>
                 </geometry>
@@ -41,10 +31,23 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0"/>
                 <geometry>
-                    <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-WHEEL.dae" scale="${model_scale}"/>
+                    <sphere radius="0.09"/>
+                    <!-- <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-WHEEL.dae" scale="${model_scale}"/> -->
                 </geometry>
             </collision>
         </link>
+
+        <!--wheel joint-->
+        <joint name="${wheel_prefix}_joint" type="${wheel_joint_type}">
+            <xacro:insert_block name="origin"/>
+            <xacro:if value="${has_limits}">
+                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="20.5"/>
+            </xacro:if>
+            <axis xyz="0 -1 0"/>
+            <joint_properties damping="30" friction="110"/>
+            <parent link="${parent_link}_link"/>
+            <child link="${wheel_prefix}_link"/>
+        </joint>
     </xacro:macro>
 
    </robot>

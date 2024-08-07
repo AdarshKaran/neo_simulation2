@@ -6,7 +6,7 @@
     <xacro:arg name="use_gazebo" default="true"/>
 
     <!--set arm name to include the arm in the simulation-->
-    <xacro:arg name="arm" default=""/>
+    <xacro:arg name="arm_type" default=""/>
 
     <!-- Model Scale -->
     <xacro:property name="model_scale" value="0.001 0.001 0.001" />
@@ -21,12 +21,21 @@
     <xacro:property name="caster_inertial_value" value="0.27258101" />
     <xacro:property name="caster_link_mass" value="12.7" />
 
-    <!-- OmniDriveModule(ODM) joint type for both wheels and casters -->
-    <xacro:property name="ODM_joint_type" value="fixed"/>
-
     <!-- Arm properties-->
-    <xacro:property name="arm_name" value="$(arg arm)"/>
+    <xacro:property name="arm" value="$(arg arm_type)"/>
     <xacro:property name="use_arm" value="false"/>
+
+    <!-- OmniDriveModule(ODM) joint type for both wheels and casters -->
+    <xacro:property name="ODM_joint_type" value="revolute"/>
+
+    <!-- When there is an arm mounted, the joints of the wheels needs 
+    to be of fixed type. The reason being, both the drive modules and 
+    the arm cannot publish joint states simultenously. Thus we omit
+    the visualization of the drives. Issue will be fixed, when we switch
+    to ROS 2 control. -->
+    <xacro:unless value="${arm == ''}">
+      <xacro:property name="ODM_joint_type" value="fixed"/>
+    </xacro:unless>
 
     <!-- import main body description -->
     <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/urdf/mpo_700_body.urdf.xacro"/>
@@ -37,7 +46,7 @@
     </xacro:if>
 
     <!-- Check if one of the arms is used -->
-    <xacro:if value="${arm_name == 'ur5' or arm_name == 'ur10' or arm_name == 'ur5e' or arm_name == 'ur10e' or arm_name == 'ec66' or arm_name == 'cs66'}">
+    <xacro:if value="${arm == 'ur5' or arm == 'ur10' or arm == 'ur5e' or arm == 'ur10e' or arm == 'ec66' or arm == 'cs66'}">
         <xacro:property name="use_arm" value="true"/>
     </xacro:if>
 
@@ -72,26 +81,34 @@
         </link>
 
         <!-- Universal Robotics Arms-->
-        <xacro:if value="${arm_name == 'ur5' or arm_name == 'ur10' or arm_name == 'ur5e' or arm_name == 'ur10e'}">
+        <xacro:if value="${arm == 'ur5' or arm == 'ur10' or arm == 'ur5e' or arm == 'ur10e'}">
+
+            <!-- create arm from macro-->
+            <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+            
             <!-- UR arm parameters -->
-            <xacro:arg name="tf_prefix" default="${arm_name}" />
-            <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/$(arg arm)/joint_limits.yaml"/>
-            <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg arm)/default_kinematics.yaml"/>
-            <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg arm)/physical_parameters.yaml"/>
-            <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg arm)/visual_parameters.yaml"/>
+            <xacro:arg name="tf_prefix" default="${arm}" />
+            <xacro:arg name="joint_limit_params" default="$(find ur_description)/config/$(arg arm_type)/joint_limits.yaml"/>
+            <xacro:arg name="kinematics_params" default="$(find ur_description)/config/$(arg arm_type)/default_kinematics.yaml"/>
+            <xacro:arg name="physical_params" default="$(find ur_description)/config/$(arg arm_type)/physical_parameters.yaml"/>
+            <xacro:arg name="visual_params" default="$(find ur_description)/config/$(arg arm_type)/visual_parameters.yaml"/>
             <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
             <xacro:arg name="safety_limits" default="false"/>
             <xacro:arg name="safety_pos_margin" default="0.15"/>
             <xacro:arg name="safety_k_position" default="20"/>
-            <xacro:arg name="force_abs_paths" default="true" />
-            <xacro:arg name="simulation_controllers" default="$(find ur_simulation_gazebo)/config/ur_controllers.yaml" />
-            <xacro:arg name="initial_joint_positions_file" default="$(find ur_description)/config/initial_positions.yaml"/>
+            <xacro:arg name="sim_gazebo" default="$(arg use_gazebo)" />
+            <xacro:arg name="simulation_controllers" default="$(find neo_simulation2)/configs/ur_config/$(arg arm_type)/ur_controllers.yaml"/>
+            <xacro:arg name="initial_positions_file" default="$(find neo_simulation2)/configs/ur_config/initial_joint_positions.yaml"/>
+            
+            <!-- parse initial positions as a dictionary -->
+            <xacro:property 
+                name="ur_initial_positions" 
+                value="${xacro.load_yaml('$(arg initial_positions_file)')}"
+                />
 
-            <!-- create arm -->
-            <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
-            <xacro:ur_robot name="${arm_name}"
-                            parent="cabinet_link"
+            <xacro:ur_robot name="${arm}"
                             tf_prefix="$(arg tf_prefix)"
+                            parent="cabinet_link"
                             joint_limits_parameters_file="$(arg joint_limit_params)"
                             kinematics_parameters_file="$(arg kinematics_params)"
                             physical_parameters_file="$(arg physical_params)"
@@ -99,49 +116,39 @@
                             safety_limits="$(arg safety_limits)"
                             safety_pos_margin="$(arg safety_pos_margin)"
                             safety_k_position="$(arg safety_k_position)"
-                            force_abs_paths="$(arg force_abs_paths)"
+                            sim_gazebo="$(arg sim_gazebo)"
+                            initial_positions = "${ur_initial_positions}"
                             >
                 <!-- position robot in the world -->
                 <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 -1.5708" />
             </xacro:ur_robot>
 
             <!-- If both UR Arm and Simulation is used -->
-            <xacro:if value="$(arg use_gazebo)">
-                <xacro:include filename="$(find ur_simulation_gazebo)/urdf/ur_gazebo.ros2_control.xacro">
-                    <parameters>$(arg simulation_controllers)</parameters>
-                </xacro:include>
-
-                <gazebo reference="cabinet_link"></gazebo>
-
+            <xacro:if value="$(arg sim_gazebo)">
+                <gazebo reference="cabinet_link">
+                </gazebo>
                 <gazebo>
                     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
                         <parameters>$(arg simulation_controllers)</parameters>
                     </plugin>
                 </gazebo>
-                <!-- ros2 control instance -->
-                <xacro:ur_ros2_control
-                    name="$(arg arm)"
-                    tf_prefix="$(arg tf_prefix)"
-                    transmission_hw_interface="$(arg transmission_hw_interface)"
-                    initial_positions="${xacro.load_yaml('$(arg initial_joint_positions_file)')}"
-                />
             </xacro:if>
         </xacro:if>
 
         <!-- Elite Arm -->
-        <xacro:if value="${arm_name == 'ec66' or arm_name == 'cs66'}">
+        <xacro:if value="${arm == 'ec66' or arm == 'cs66'}">
 
         <!--Elite arm parameters-->
-        <xacro:arg name="tf_prefix" default="${arm_name}"/>
-        <xacro:arg name="joint_limit_params_file" default="$(find elite_description)/config/$(arg arm)/joint_limits.yaml"/>
-        <xacro:arg name="joint_origin_params_file" default="$(find elite_description)/config/$(arg arm)/joint_origins.yaml"/>
-        <xacro:arg name="link_inertials_params_file" default="$(find elite_description)/config/$(arg arm)/link_inertials.yaml"/>
-        <xacro:arg name="initial_joint_positions_file" default="$(find elite_description)/config/$(arg arm)/initial_positions.yaml"/>
+        <xacro:arg name="tf_prefix" default="${arm}"/>
+        <xacro:arg name="joint_limit_params_file" default="$(find elite_description)/config/$(arg arm_type)/joint_limits.yaml"/>
+        <xacro:arg name="joint_origin_params_file" default="$(find elite_description)/config/$(arg arm_type)/joint_origins.yaml"/>
+        <xacro:arg name="link_inertials_params_file" default="$(find elite_description)/config/$(arg arm_type)/link_inertials.yaml"/>
+        <xacro:arg name="initial_joint_positions_file" default="$(find elite_description)/config/$(arg arm_type)/initial_positions.yaml"/>
 
             <!-- create arm -->
             <xacro:include filename="$(find elite_description)/urdf/macro/elite_macro.xacro" />
             <xacro:elite_robot 
-                name="$(arg arm)"
+                name="$(arg arm_type)"
                 tf_prefix="$(arg tf_prefix)"
                 arm_parent="cabinet_link"
                 joint_limits_parameters_file="$(arg joint_limit_params_file)"

@@ -6,8 +6,10 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription, LaunchContext
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterFile
 import os
 import xacro
 
@@ -40,7 +42,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_ne
     default_world_path = os.path.join(get_package_share_directory('neo_simulation2'), 'worlds', my_neo_environment + '.world')
     robot_description_urdf = os.path.join(get_package_share_directory('neo_simulation2'), 'robots/'+my_neo_robot+'/', my_neo_robot+'.urdf.xacro')
     # use_gazebo is set to True since this code launches the robot in simulation
-    xacro_args = {'use_gazebo': 'true','arm': my_neo_robot_arm, 'robot_prefix': my_neo_robot}
+    xacro_args = {'use_gazebo': 'true','arm_type': my_neo_robot_arm, 'robot_prefix': my_neo_robot}
     # Use xacro to process the file
     robot_description_xacro = xacro.process_file(robot_description_urdf, mappings=xacro_args).toxml()
 
@@ -68,7 +70,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_ne
         name='robot_state_publisher',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time, 
-                     'robot_description': robot_description_xacro}],
+                     'robot_description': robot_description_xacro},]
         )
 
     teleop = Node(
@@ -78,7 +80,7 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_ne
         prefix = 'xterm -e',
         name='teleop'
         )
-
+    
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -94,8 +96,8 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, my_ne
     launch_actions.append(teleop)
     launch_actions.append(start_robot_state_publisher_cmd)
     if my_neo_robot_arm != '':
-      launch_actions.append(joint_state_broadcaster_spawner)
-      launch_actions.append(initial_joint_controller_spawner_stopped)
+        launch_actions.append(joint_state_broadcaster_spawner)
+        launch_actions.append(initial_joint_controller_spawner_stopped)
     launch_actions.append(gazebo)
     launch_actions.append(spawn_entity)
 
@@ -121,8 +123,8 @@ def generate_launch_description():
         )
 
     declare_arm_cmd = DeclareLaunchArgument(
-        'arm', default_value='',
-        description='Arm Types:\n'
+            'arm_type', default_value='',
+            description='Arm Types:\n'
             '\t Elite Arms: ec66, cs66\n'
             '\t Universal Robotics: ur5, ur10, ur5e, ur10e'        
         )
@@ -130,7 +132,7 @@ def generate_launch_description():
     # Create launch configuration variables for the robot and map name
     my_neo_robot_arg = LaunchConfiguration('my_robot')
     my_neo_env_arg = LaunchConfiguration('map_name')
-    my_neo_robot_arm_arg = LaunchConfiguration('arm')
+    my_neo_robot_arm_arg = LaunchConfiguration('arm_type')
     use_sim_time_arg = LaunchConfiguration('use_sim_time')
 
     ld.add_action(declare_my_robot_arg)

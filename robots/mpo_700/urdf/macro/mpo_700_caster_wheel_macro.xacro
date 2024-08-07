@@ -5,7 +5,8 @@
     <xacro:macro name="mpo_700_caster_wheel" params="
         caster_prefix
         caster_joint_type
-        *origin 
+        link_origin_rpy
+        *origin
         parent_link
         caster_inertial_value
         caster_link_mass
@@ -20,13 +21,13 @@
                 <inertia ixx="${caster_inertial_value}" ixy="0" ixz="0" iyy="${caster_inertial_value}" iyz="0" izz="${caster_inertial_value}"/>
             </inertial>
             <visual>
-                <origin xyz="0 0 0.10" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${link_origin_rpy}"/>
                 <geometry>
                     <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-HEAD.dae" scale="${model_scale}"/>
                 </geometry>
             </visual>
             <collision>
-                <origin xyz="0 0 0.10" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${link_origin_rpy}"/>
                 <geometry>
                     <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-HEAD.dae" scale="${model_scale}"/>
                 </geometry>
@@ -35,11 +36,11 @@
 
         <joint name="${caster_prefix}_joint" type="${caster_joint_type}">
             <xacro:insert_block name="origin"/>
-            <axis xyz="0 0 -1"/>
+            <axis xyz="0 0 1"/>
             <xacro:if value="${has_limits}">
-                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="15"/>
+                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="6.5"/>
             </xacro:if>
-            <joint_properties damping="1" friction="1"/>
+            <joint_properties damping="30" friction="110"/>
             <parent link="${parent_link}"/>
             <child link="${caster_prefix}_link"/>
         </joint>

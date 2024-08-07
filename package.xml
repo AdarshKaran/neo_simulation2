@@ -12,6 +12,7 @@
   <exec_depend>navigation2</exec_depend>
   <exec_depend>slam_toolbox</exec_depend>
   <exec_depend>neo_nav2_bringup</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>ur_simulation_gazebo</exec_depend>
   <exec_depend>ur_description</exec_depend>
   <exec_depend>elite_description</exec_depend>
