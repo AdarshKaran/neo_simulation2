@@ -124,7 +124,7 @@
             </xacro:ur_robot>
 
             <!-- If both UR Arm and Simulation is used -->
-            <xacro:if value="$(arg sim_gazebo)">
+            <xacro:if value="$(arg use_gazebo)">
                 <gazebo reference="cabinet_link">
                 </gazebo>
                 <gazebo>
@@ -132,6 +132,7 @@
                         <parameters>$(arg simulation_controllers)</parameters>
                     </plugin>
                 </gazebo>
+                
             </xacro:if>
         </xacro:if>
 
