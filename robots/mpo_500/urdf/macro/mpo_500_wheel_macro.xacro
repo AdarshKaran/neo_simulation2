@@ -2,15 +2,11 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
 
     <!--WHEEL MACRO-->
-    <xacro:macro name="mpo_700_wheel" params="
+    <xacro:macro name="mpo_500_wheel" params="
         wheel_prefix 
-        parent_prefix
-        link_origin_rpy
+        parent_link
         *origin
-        wheel_joint_type 
-        ixx 
-        iyy 
-        izz 
+        wheel_joint_type
         has_limits
         model_scale
         ">
@@ -20,19 +16,18 @@
             <inertial>
                 <mass value="${wheel_link_mass}"/>
                 <origin rpy="0 0 0" xyz="0 0 0"/>
-                <inertia ixx="${ixx}" ixy="0" ixz="0" iyy="${iyy}" iyz="0" izz="${izz}"/>
+                <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
             </inertial>
             <visual>
-                <origin rpy="${link_origin_rpy}" xyz="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
                 <geometry>
-                    <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-WHEEL.dae" scale="${model_scale}"/>
+                    <mesh filename="package://neo_simulation2/robots/mpo_500/meshes/MPO-500-WHEEL.dae" scale="${model_scale}"/>
                 </geometry>
             </visual>
             <collision>
-                <origin rpy="0 0 0" xyz="0 0 0"/>
+                <origin rpy="0 1.57 1.57" xyz="0 0 0"/>
                 <geometry>
-                    <sphere radius="0.09"/>
-                    <!-- <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-WHEEL.dae" scale="${model_scale}"/> -->
+                    <sphere radius="0.117"/>
                 </geometry>
             </collision>
         </link>
@@ -41,11 +36,11 @@
         <joint name="${wheel_prefix}_joint" type="${wheel_joint_type}">
             <xacro:insert_block name="origin"/>
             <xacro:if value="${has_limits}">
-                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="20.5"/>
+                <limit effort="1000.0" lower="-1e+16" upper="1e+16" velocity="15"/>
             </xacro:if>
-            <axis xyz="0 -1 0"/>
-            <joint_properties damping="30" friction="110"/>
-            <parent link="${parent_prefix}_link"/>
+            <axis xyz="0 1 0"/>
+            <joint_properties damping="1.0" friction="1"/>
+            <parent link="${parent_link}"/>
             <child link="${wheel_prefix}_link"/>
         </joint>
     </xacro:macro>

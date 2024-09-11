@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!-- This is the main URDF file for mpo_700-->
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
+<!-- This is the main URDF file for mpo_500-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_500">
 
     <!--set use_gazebo = false for implementation on real robot-->
     <xacro:arg name="use_gazebo" default="true"/>
@@ -12,14 +12,10 @@
     <xacro:property name="model_scale" value="0.001 0.001 0.001" />
 
     <!-- Base Properties -->
-    <xacro:property name= "base_link_mass" value="140" />
+    <xacro:property name= "base_link_mass" value="64" />
 
     <!-- Wheel Properties -->
-    <xacro:property name="wheel_link_mass" value="1.2" />
-
-    <!-- caster Wheel Properties -->
-    <xacro:property name="caster_inertial_value" value="0.27258101" />
-    <xacro:property name="caster_link_mass" value="12.7" />
+    <xacro:property name="wheel_link_mass" value="2.2" />
 
     <!-- Arm properties-->
     <xacro:property name="arm" value="$(arg arm_type)"/>
@@ -38,11 +34,11 @@
     </xacro:unless>
 
     <!-- import main body description -->
-    <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/urdf/mpo_700_body.urdf.xacro"/>
+    <xacro:include filename="$(find neo_simulation2)/robots/mpo_500/urdf/mpo_500_body.urdf.xacro"/>
  
     <!-- If Simulation is used -->
     <xacro:if value="$(arg use_gazebo)">
-        <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/urdf/mpo_700_gazebo.urdf.xacro"/>
+        <xacro:include filename="$(find neo_simulation2)/robots/mpo_500/urdf/mpo_500_gazebo.urdf.xacro"/>
     </xacro:if>
 
     <!-- Check if one of the arms is used -->
@@ -55,15 +51,14 @@
         <!-- cabinet -->
         <xacro:include filename="$(find neo_simulation2)/components/common_macro/mpo_cabinet_macro.xacro"/>
         <xacro:cabinet
-            neo_robot_name="mpo_700"
+            neo_robot_name="mpo_500"
             parent_link="base_link"
             model_scale="${model_scale}"
-            inertial_rpy="0 0 -1.5708"
+            inertial_rpy="0 0 0"
             visual_rpy="0 0 -1.5708"
-            collision_rpy="0 0 -1.5708"
+            collision_rpy="0 0 0"
         >
-            <origin rpy="0 0 0" xyz="0.025 0 0.35"/>
-
+            <origin rpy="0 0 0" xyz="0.072 0 0.386"/>
         </xacro:cabinet>
 
         <!-- Universal Robotics Arm-->
@@ -77,9 +72,6 @@
         </xacro:if>
 
     </xacro:if>
-      <!-- SENSORS -->
-      <!-- Sick S300 - Comment/Uncomment if required -->
-      <!-- <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/xacros/sick_S300.xacro" /> -->
 </robot>
 
 

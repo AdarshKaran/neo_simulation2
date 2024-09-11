@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo">
 
     <!--Gazebo Object Controller Macro-->
     <xacro:macro name="gazebo_object_controller" params="
@@ -7,6 +7,7 @@
         controller_update_rate
         odom_frame
         base_frame
+        covariance_yaw
         ">
 
         <gazebo>
@@ -33,7 +34,7 @@
                 <!-- Set odom covariance -->
                 <covariance_x>0.0001</covariance_x>
                 <covariance_y>0.0001</covariance_y>
-                <covariance_yaw>0.0001</covariance_yaw>
+                <covariance_yaw>${covariance_yaw}</covariance_yaw>
             </plugin>  
         </gazebo>
     </xacro:macro>
