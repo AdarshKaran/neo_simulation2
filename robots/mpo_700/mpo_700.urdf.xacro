@@ -8,19 +8,6 @@
     <!--set arm name to include the arm in the simulation-->
     <xacro:arg name="arm_type" default=""/>
 
-    <!-- Model Scale -->
-    <xacro:property name="model_scale" value="0.001 0.001 0.001" />
-
-    <!-- Base Properties -->
-    <xacro:property name= "base_link_mass" value="140" />
-
-    <!-- Wheel Properties -->
-    <xacro:property name="wheel_link_mass" value="1.2" />
-
-    <!-- caster Wheel Properties -->
-    <xacro:property name="caster_inertial_value" value="0.27258101" />
-    <xacro:property name="caster_link_mass" value="12.7" />
-
     <!-- Arm properties-->
     <xacro:property name="arm" value="$(arg arm_type)"/>
     <xacro:property name="use_arm" value="false"/>
@@ -57,7 +44,7 @@
         <xacro:cabinet
             neo_robot_name="mpo_700"
             parent_link="base_link"
-            model_scale="${model_scale}"
+            model_scale="0.001 0.001 0.001"
             inertial_rpy="0 0 -1.5708"
             visual_rpy="0 0 -1.5708"
             collision_rpy="0 0 -1.5708"

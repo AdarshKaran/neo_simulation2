@@ -7,7 +7,6 @@
     <xacro:include filename="$(find neo_simulation2)/robots/mpo_500/urdf/macro/gazebo_mpo_500_wheel_macro.xacro" />
     
     <!-- Properties -->
-    <xacro:property name="wheel_mu" value="0.0001" />
     <xacro:property name="lidar_1_update_rate" value="100" />
     <xacro:property name="lidar_2_update_rate" value="100" />
     <xacro:property name="controller_update_rate" value="100" />
@@ -55,19 +54,15 @@
     <!--Wheels-->
     <xacro:gazebo_mpo_500_wheel
         wheel_prefix="mpo_500_omni_wheel_front_right" 
-        wheel_mu="${wheel_mu}"
         />
     <xacro:gazebo_mpo_500_wheel
         wheel_prefix="mpo_500_omni_wheel_back_right" 
-        wheel_mu="${wheel_mu}"
         />
     <xacro:gazebo_mpo_500_wheel
         wheel_prefix="mpo_500_omni_wheel_front_left" 
-        wheel_mu="${wheel_mu}"
         />
     <xacro:gazebo_mpo_500_wheel
         wheel_prefix="mpo_500_omni_wheel_back_left" 
-        wheel_mu="${wheel_mu}"
         />
       
 </robot>

@@ -21,7 +21,7 @@
 
         <link name="cabinet_link">
             <inertial>
-                <mass value="2"/>
+                <mass value="10"/>
                 <origin rpy="${inertial_rpy}" xyz="0 0 0"/>
                 <inertia ixx="0.457072" ixy="0.0" ixz="0.0" iyy="0.23616" iyz="0.0" izz="0.686"/>
             </inertial>

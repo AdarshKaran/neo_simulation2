@@ -14,20 +14,20 @@
 
     <link name="base_link">
         <inertial>
-            <mass value="${base_link_mass}"/>
+            <mass value="64"/>
             <origin xyz="0 0 0"/>
             <inertia ixx="2.8" ixy="0.0" ixz="0.0" iyy="2.8" iyz="0.0" izz="2.8"/>
         </inertial>
         <visual>
             <origin rpy="-1.571 0 1.571" xyz="0. 0. 0"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/robots/mpo_500/meshes/MPO-500-BODY.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/robots/mpo_500/meshes/MPO-500-BODY.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="-1.571 0 1.571" xyz="0. 0. 0"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/robots/mpo_500/meshes/MPO-500-BODY.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/robots/mpo_500/meshes/MPO-500-BODY.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -49,13 +49,13 @@
         <visual>
             <origin rpy="1.57 0 0" xyz="0 0 -0.06"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="1.57 0 0" xyz="0 0 -0.06"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -76,13 +76,13 @@
         <visual>
             <origin rpy="1.57 0 0" xyz="0 0 -0.06"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="1.57 0 0" xyz="0 0 -0.06"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-MICROSCAN3.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -91,44 +91,44 @@
     <xacro:include filename="$(find neo_simulation2)/robots/mpo_500/urdf/macro/mpo_500_wheel_macro.xacro"/>
 
     <!-- Omni Wheels-->
-    <xacro:mpo_500_wheel 
+    <xacro:mpo_500_omni_wheel 
         wheel_prefix="mpo_500_omni_wheel_front_left"
         parent_link="base_link" 
         wheel_joint_type="${ODM_joint_type}"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="0.25 0.28 0.13"/>
-    </xacro:mpo_500_wheel>
+    </xacro:mpo_500_omni_wheel>
 
-    <xacro:mpo_500_wheel 
+    <xacro:mpo_500_omni_wheel 
         wheel_prefix="mpo_500_omni_wheel_front_right" 
         parent_link="base_link" 
         wheel_joint_type="${ODM_joint_type}"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 3.14" xyz="0.25 -0.28 0.13"/>
-    </xacro:mpo_500_wheel>
+    </xacro:mpo_500_omni_wheel>
 
-    <xacro:mpo_500_wheel 
+    <xacro:mpo_500_omni_wheel 
         wheel_prefix="mpo_500_omni_wheel_back_left" 
         parent_link="base_link"
         wheel_joint_type="${ODM_joint_type}"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="-0.25 0.28 0.13"/>
-    </xacro:mpo_500_wheel>
+    </xacro:mpo_500_omni_wheel>
 
-    <xacro:mpo_500_wheel
+    <xacro:mpo_500_omni_wheel
         wheel_prefix="mpo_500_omni_wheel_back_right"
         parent_link="base_link" 
         wheel_joint_type="${ODM_joint_type}"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 3.14" xyz="-0.25 -0.28 0.13"/>
-    </xacro:mpo_500_wheel>
+    </xacro:mpo_500_omni_wheel>
 
 </robot>

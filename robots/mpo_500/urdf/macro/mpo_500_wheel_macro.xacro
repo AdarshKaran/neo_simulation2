@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpo_700">
 
     <!--WHEEL MACRO-->
-    <xacro:macro name="mpo_500_wheel" params="
+    <xacro:macro name="mpo_500_omni_wheel" params="
         wheel_prefix 
         parent_link
         *origin
@@ -14,7 +14,7 @@
         <!--wheel link-->
         <link name="${wheel_prefix}_link" type="wheel">
             <inertial>
-                <mass value="${wheel_link_mass}"/>
+                <mass value="2.2"/>
                 <origin rpy="0 0 0" xyz="0 0 0"/>
                 <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
             </inertial>
@@ -46,3 +46,6 @@
     </xacro:macro>
 
    </robot>
+
+
+   

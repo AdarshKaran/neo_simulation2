@@ -8,9 +8,6 @@
         link_origin_rpy
         *origin
         wheel_joint_type 
-        ixx 
-        iyy 
-        izz 
         has_limits
         model_scale
         ">
@@ -18,9 +15,9 @@
         <!--wheel link-->
         <link name="${wheel_prefix}_link" type="wheel">
             <inertial>
-                <mass value="${wheel_link_mass}"/>
+                <mass value="1.2"/>
                 <origin rpy="0 0 0" xyz="0 0 0"/>
-                <inertia ixx="${ixx}" ixy="0" ixz="0" iyy="${iyy}" iyz="0" izz="${izz}"/>
+                <inertia ixx="0.11042056" ixy="0" ixz="0" iyy="0.11042056" iyz="0" izz="0.11042056"/>
             </inertial>
             <visual>
                 <origin rpy="${link_origin_rpy}" xyz="0 0 0"/>

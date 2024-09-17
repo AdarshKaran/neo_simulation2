@@ -14,20 +14,20 @@
 
     <link name="base_link">
         <inertial>
-            <mass value="${base_link_mass}"/>
+            <mass value="140"/>
             <origin xyz="0 0 0"/>
             <inertia ixx="7.8" ixy="0.0" ixz="0" iyy="7.8" iyz="0.0" izz="7.8"/>
         </inertial>
         <visual>
             <origin rpy="0 0 -1.571" xyz="0.0 0.0 0.0"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-BODY.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-BODY.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="0 0 -1.571" xyz="0. 0. 0."/>
             <geometry>
-                <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-BODY.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/robots/mpo_700/meshes/MPO-700-BODY.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -49,13 +49,13 @@
         <visual>
             <origin rpy="-1.57 0 3.14" xyz="0 0 -0.12"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="-1.57 0 3.14" xyz="0 0 -0.12"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -76,13 +76,13 @@
         <visual>
             <origin rpy="-1.57 0 3.14" xyz="0 0 -0.12"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </visual>
         <collision>
             <origin rpy="-1.57 0 3.14" xyz="0 0 -0.12"/>
             <geometry>
-                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="${model_scale}"/>
+                <mesh filename="package://neo_simulation2/components/meshes/SICK-S300.dae" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -97,10 +97,9 @@
         caster_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 0"
         parent_link="base_link"
-        caster_inertial_value="${caster_inertial_value}"
-        caster_link_mass="${caster_link_mass}"
+        caster_inertial_value="0.27258101"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="0.24 0.18 0.22"/>
     </xacro:mpo_700_caster_wheel>
@@ -110,10 +109,9 @@
         caster_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
         parent_link="base_link"
-        caster_inertial_value="${caster_inertial_value}"
-        caster_link_mass="${caster_link_mass}"
+        caster_inertial_value="0.27258101"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="0.24 -0.18 0.22"/>
     </xacro:mpo_700_caster_wheel>
@@ -123,10 +121,9 @@
         caster_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 0"
         parent_link="base_link"
-        caster_inertial_value="${caster_inertial_value}"
-        caster_link_mass="${caster_link_mass}"
+        caster_inertial_value="0.27258101"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="-0.24 0.18 0.22"/>
     </xacro:mpo_700_caster_wheel>
@@ -136,10 +133,9 @@
         caster_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
         parent_link="base_link"
-        caster_inertial_value="${caster_inertial_value}"
-        caster_link_mass="${caster_link_mass}"
+        caster_inertial_value="0.27258101"
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="-0.24 -0.18 0.22"/>
     </xacro:mpo_700_caster_wheel>
@@ -150,11 +146,8 @@
         parent_prefix="mpo_700_caster_front_left" 
         wheel_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
-        ixx="0.11042056" 
-        iyy="0.11042056" 
-        izz="0.11042056" 
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="0.0 0.045 -0.12"/>
     </xacro:mpo_700_wheel>
@@ -164,11 +157,8 @@
         parent_prefix="mpo_700_caster_front_right" 
         wheel_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
-        ixx="0.11042056" 
-        iyy="0.11042056" 
-        izz="0.11042056" 
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 3.14" xyz="0.0 -0.045 -0.12"/>
     </xacro:mpo_700_wheel>
@@ -178,11 +168,8 @@
         parent_prefix="mpo_700_caster_back_left"
         wheel_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
-        ixx="0.11042056" 
-        iyy="0.11042056" 
-        izz="0.11042056" 
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 0" xyz="0.0 0.045 -0.12"/>
     </xacro:mpo_700_wheel>
@@ -192,11 +179,8 @@
         parent_prefix="mpo_700_caster_back_right" 
         wheel_joint_type="${ODM_joint_type}"
         link_origin_rpy="0 0 3.14"
-        ixx="0.11042056" 
-        iyy="0.11042056" 
-        izz="0.11042056" 
         has_limits="true"
-        model_scale="${model_scale}"
+        model_scale="0.001 0.001 0.001"
         >
         <origin rpy="0 0 3.14" xyz="0.0 -0.045 -0.12"/>
     </xacro:mpo_700_wheel>
