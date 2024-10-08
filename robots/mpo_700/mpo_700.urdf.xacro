@@ -12,17 +12,8 @@
     <xacro:property name="arm" value="$(arg arm_type)"/>
     <xacro:property name="use_arm" value="false"/>
 
-    <!-- OmniDriveModule(ODM) joint type for both wheels and casters -->
-    <xacro:property name="ODM_joint_type" value="revolute"/>
-
-    <!-- When there is an arm mounted, the joints of the wheels needs 
-    to be of fixed type. The reason being, both the drive modules and 
-    the arm cannot publish joint states simultenously. Thus we omit
-    the visualization of the drives. Issue will be fixed, when we switch
-    to ROS 2 control. -->
-    <xacro:unless value="${arm == ''}">
-      <xacro:property name="ODM_joint_type" value="fixed"/>
-    </xacro:unless>
+    <!-- OmniDriveModule(ODM) joint type for both wheels and casters(fixed for simulation)-->
+    <xacro:property name="ODM_joint_type" value="fixed"/>
 
     <!-- import main body description -->
     <xacro:include filename="$(find neo_simulation2)/robots/mpo_700/urdf/mpo_700_body.urdf.xacro"/>
