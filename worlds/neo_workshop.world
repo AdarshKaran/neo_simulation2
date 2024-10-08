@@ -1938,7 +1938,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -1987,7 +1987,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2036,7 +2036,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2085,7 +2085,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2134,7 +2134,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2183,7 +2183,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2232,7 +2232,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2281,7 +2281,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2330,7 +2330,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2379,7 +2379,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2428,7 +2428,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2477,7 +2477,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2526,7 +2526,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2575,7 +2575,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2624,7 +2624,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
@@ -2673,7 +2673,7 @@
             <script>
               <uri>model://neobotix_wall_stickers/materials/scripts</uri>
               <uri>model://neobotix_wall_stickers/materials/textures/</uri>
-              <name>NeobotixGroundPlane/Image</name>
+              <name>NeobotixWallStickers/Image</name>
             </script>
           </material>
         </visual>
