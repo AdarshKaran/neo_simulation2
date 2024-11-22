@@ -142,7 +142,19 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, robot
         executable="spawner",
         arguments=["joint_trajectory_controller", "-c", "/controller_manager"],
     )
+    robotiq_gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["robotiq_gripper_controller", "-c", "/controller_manager"],
+        output='screen'
+    )
 
+    robotiq_activation_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["robotiq_activation_controller", "-c", "/controller_manager"],
+        output='screen'
+    )
     # See Issue: https://github.com/ros2/rclpy/issues/1287
     # Cannot delete the newly create file. The user has to delete it on his own
     # Refer documentation for more info
@@ -157,6 +169,8 @@ def launch_setup(context: LaunchContext, my_neo_robot_arg, my_neo_env_arg, robot
     if robot_arm_type != '':
         launch_actions.append(joint_state_broadcaster_spawner)
         launch_actions.append(initial_joint_controller_spawner_stopped)
+        launch_actions.append(robotiq_gripper_controller_spawner)
+        launch_actions.append(robotiq_activation_controller_spawner)
     launch_actions.append(gazebo)
     launch_actions.append(spawn_entity)
     launch_actions.append(teleop)

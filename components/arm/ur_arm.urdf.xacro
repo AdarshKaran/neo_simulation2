@@ -4,6 +4,9 @@
 
             <!-- create arm from macro-->
             <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+            <!-- end effector-->
+            <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"/>
+
            
             <xacro:arg name="arm_type" default="ur10"/>
             <xacro:arg name="use_gazebo" default="true"/>
@@ -45,6 +48,9 @@
                 <!-- position robot in the world -->
                 <origin xyz="0.133 0.0 0.416" rpy="0.0 0.0 -1.5708" />
             </xacro:ur_robot>
+            <xacro:robotiq_gripper name="neo" prefix="$(arg tf_prefix)" parent="$(arg tf_prefix)tool0" sim_ignition="true" use_fake_hardware="false" >
+                <origin xyz="0 0 0" rpy="0 -1.57 0" />
+            </xacro:robotiq_gripper>
 
             <!-- If both UR Arm and Simulation is used -->
             <xacro:if value="$(arg use_gazebo)">
