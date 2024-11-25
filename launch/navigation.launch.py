@@ -12,8 +12,6 @@ from launch.conditions import IfCondition
 """
 Description:
 
-You can launch this file using the following terminal commands:
-
 This launch file is used to start the navigation for simulated Neobotix robot. 
 It is launched after launching the "simulation.launch.py" file.
 
@@ -21,7 +19,7 @@ You can launch this file using the following terminal commands:
 
 1. `ros2 launch neo_simulation2 navigation.launch.py --show-args`
    This command shows the arguments that can be passed to the launch file.
-2. `ros2 launch neo_simulation2 navigation.launch.py map_name:=neo_track1 use_sim_time:=True use_multi_robots:=False use_amcl:=False`
+2. `ros2 launch neo_simulation2 navigation.launch.py map:=neo_track1 use_sim_time:=True use_multi_robots:=False use_amcl:=False`
    This command launches the simulation with sample values for the arguments.
    !(case is important for True/False)
 
