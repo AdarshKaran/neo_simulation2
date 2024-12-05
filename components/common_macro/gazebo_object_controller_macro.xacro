@@ -28,7 +28,7 @@
                 <publish_odom_tf>true</publish_odom_tf>
     
                 <!-- Frame IDs -->
-                <odometryFrame>${odom_frame}</odometryFrame>
+                <odometry_frame>${odom_frame}</odometry_frame>
                 <robot_base_frame>${base_frame}</robot_base_frame>
     
                 <!-- Set odom covariance -->
